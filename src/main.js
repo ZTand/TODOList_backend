@@ -11,6 +11,7 @@ const router = new Router();
 
 import * as usersCtrl from './users.ctrl';
 import share from './share';
+import jwtMiddleware from './lib/jwtMiddleware';
 
 mongoose
   .connect(MONGO_URI, { useNewUrlParser: true, useFindAndModify: false })
@@ -26,6 +27,8 @@ router.get('/', (ctx) => {
 });
 router.post('/login', usersCtrl.login);
 router.post('/register', usersCtrl.register);
+router.get('/check', usersCtrl.check);
+router.post('/logout', usersCtrl.logout);
 router.get('/shop', usersCtrl.shop);
 
 // 라우터 설정
@@ -33,6 +36,7 @@ router.use('/share', share.routes());
 
 // 라우터 적용 전에 bodyParser 적용
 app.use(bodyParser());
+app.use(jwtMiddleware);
 
 // app 인스턴스에 라우터 적용
 app.use(router.routes()).use(router.allowedMethods());

@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import todo, { TodoSchema } from './todo';
 
@@ -22,6 +23,19 @@ UserSchema.statics.findByUsername = function (username) {
 };
 UserSchema.statics.findById = function (id) {
   return this.findOne({ id }); // static method에서 this는 Model을 가리킨다.
+};
+UserSchema.methods.generateToken = function () {
+  const token = jwt.sign(
+    {
+      _id: this.id,
+      username: this.username,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '28d',
+    },
+  );
+  return token;
 };
 
 const User = mongoose.model('User', UserSchema);
